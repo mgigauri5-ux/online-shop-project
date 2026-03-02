@@ -1,0 +1,99 @@
+{% extends "shop/base.html" %}
+
+{% block title %}{{ product.title }} - TECH SHOP{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    {% if product %}
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}" class="text-decoration-none">მაღაზია</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.category.name|default:"პროდუქტი" }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <div class="col-md-6">
+            <div id="productCarousel" class="carousel slide shadow-sm rounded-4 border bg-white p-3" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% if product.images %}
+                        {% for img in product.images %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ img }}" class="d-block w-100" style="height: 400px; object-fit: contain;" alt="{{ product.title }}">
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="carousel-item active text-center py-5">
+                            <i class="bi bi-image text-muted" style="font-size: 5rem;"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                {% if product.images|length > 1 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="ps-lg-4">
+                <small class="text-primary fw-bold text-uppercase tracking-wider">{{ product.brand|default:"Tech" }}</small>
+                <h1 class="display-6 fw-bold mt-2 mb-3">{{ product.title }}</h1>
+                
+                <div class="d-flex align-items-center mb-4">
+                    <div class="text-warning me-2">
+                        <i class="bi bi-star-fill"></i>
+                        <span class="fw-bold text-dark">{{ product.rating|default:"0.0" }}</span>
+                    </div>
+                    <span class="text-muted small border-start ps-2">კოდი: {{ product.p_id|slice:":8" }}</span>
+                </div>
+
+                <div class="mb-4">
+                    <h2 class="text-primary fw-bold">{{ product.price.current }} ₾</h2>
+                    {% if product.price.before > product.price.current %}
+                        <span class="text-muted text-decoration-line-through small">{{ product.price.before }} ₾</span>
+                    {% endif %}
+                </div>
+
+                <div class="card bg-light border-0 p-3 mb-4 rounded-3">
+                    <p class="mb-2"><strong>კატეგორია:</strong> {{ product.category.name|default:"სხვა" }}</p>
+                    <p class="mb-0"><strong>მარაგი:</strong> 
+                        {% if product.stock > 0 %}
+                            <span class="badge bg-success-subtle text-success border border-success px-3">{{ product.stock }} ცალი</span>
+                        {% else %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger px-3">ამოწურულია</span>
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'shop:update_cart' product.p_id 'increment' %}" class="btn btn-primary btn-lg py-3 rounded-pill fw-bold shadow-sm">
+                        <i class="bi bi-cart-plus-fill me-2"></i> კალათაში დამატება
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5 pt-5 border-top mb-5">
+        <div class="col-lg-8">
+            <h4 class="fw-bold mb-4">პროდუქტის აღწერა</h4>
+            <div class="lh-lg text-muted">
+                {{ product.description|linebreaks }}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="bi bi-exclamation-triangle display-1 text-warning mb-4"></i>
+        <h2 class="fw-bold">პროდუქტი არ მოიძებნა</h2>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-primary mt-3">მაღაზიაში დაბრუნება</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

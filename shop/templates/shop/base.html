@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TECH SHOP - შენი ტექნოლოგიური გზამკვლევი{% endblock %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        :root { --primary-color: #0d6efd; }
+        body { background-color: #f8f9fa; min-height: 100vh; display: flex; flex-direction: column; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar-brand { font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+        .card { transition: all 0.3s ease; border: none; border-radius: 12px; overflow: hidden; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+        main { flex: 1; }
+        footer { background: #fff; border-top: 1px solid #dee2e6; padding: 2rem 0; }
+        .nav-link { font-weight: 500; }
+        .badge-cart { font-size: 0.65rem; padding: 0.35em 0.5em; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand text-primary" href="{% url 'shop:product_list' %}">
+                <i class="bi bi-cpu-fill me-2"></i>TECH SHOP
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <form class="d-flex mx-auto my-2 my-lg-0" action="{% url 'shop:product_list' %}" method="get" style="width: 45%;">
+                    <div class="input-group">
+                        <input class="form-control border-0 shadow-none" type="search" name="search" placeholder="მოძებნე ტექნიკა..." value="{{ query|default:'' }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}" href="{% url 'shop:product_list' %}">მთავარი</a>
+                    </li>
+                    
+                    {% if request.session.access_token %}
+                        <li class="nav-item ms-lg-3">
+                            <span class="badge bg-dark border border-secondary py-2 px-3 text-light">
+                                <i class="bi bi-person-circle me-1 text-primary"></i> {{ request.session.user_email }}
+                            </span>
+                        </li>
+                        <li class="nav-item ms-2">
+                            <a href="{% url 'shop:logout' %}" class="btn btn-sm btn-outline-danger border-0">გამოსვლა</a>
+                        </li>
+                        <li class="nav-item ms-lg-3">
+                            <a href="{% url 'shop:cart_detail' %}" class="nav-link position-relative px-2">
+                                <i class="bi bi-cart3 fs-5"></i>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger badge-cart">
+                                    {{ request.session.cart|length|default:0 }}
+                                </span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item ms-lg-3">
+                            <a href="{% url 'shop:register' %}" class="nav-link">რეგისტრაცია</a>
+                        </li>
+                        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                            <a href="{% url 'shop:login' %}" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm">შესვლა</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer class="mt-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0 text-muted">&copy; 2026 <strong>TECH SHOP</strong>. ყველა უფლება დაცულია.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                    <a href="#" class="text-muted me-3 text-decoration-none small">წესები და პირობები</a>
+                    <a href="#" class="text-muted text-decoration-none small">კონტაქტი</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block scripts %}{% endblock %}
+
+</body>
+</html>

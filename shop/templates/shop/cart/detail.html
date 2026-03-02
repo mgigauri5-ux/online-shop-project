@@ -1,0 +1,100 @@
+{% extends "shop/base.html" %}
+
+{% block title %}თქვენი კალათა - TECH SHOP{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="bi bi-bag-check me-2"></i> თქვენი კალათა</h2>
+        <a href="{% url 'shop:product_list' %}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> შოპინგის გაგრძელება
+        </a>
+    </div>
+
+    {% if cart_items %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">პროდუქტი</th>
+                                <th>ფასი</th>
+                                <th>რაოდენობა</th>
+                                <th>ჯამი</th>
+                                <th class="pe-4"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center py-2">
+                                        <img src="{{ item.image }}" alt="" style="width: 60px; height: 60px; object-fit: contain;" class="rounded border me-3 bg-white">
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">{{ item.title|truncatechars:40 }}</h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{ item.price }} ₾</td>
+                                <td>
+                                    <div class="d-flex align-items-center border rounded-pill px-2 py-1 bg-light" style="width: fit-content;">
+                                        <a href="{% url 'shop:update_cart' item.id 'decrement' %}" class="btn btn-sm btn-light rounded-circle border-0 text-primary fw-bold">-</a>
+                                        <span class="px-3 fw-bold">{{ item.quantity }}</span>
+                                        <a href="{% url 'shop:update_cart' item.id 'increment' %}" class="btn btn-sm btn-light rounded-circle border-0 text-primary fw-bold">+</a>
+                                    </div>
+                                </td>
+                                <td class="fw-bold text-primary">{{ item.total }} ₾</td>
+                                <td class="pe-4 text-end">
+                                    <a href="{% url 'shop:update_cart' item.id 'remove' %}" class="btn btn-sm btn-outline-danger rounded-circle">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4 rounded-4 bg-white sticky-top" style="top: 20px;">
+                <h5 class="fw-bold mb-4">შეკვეთის დეტალები</h5>
+                <div class="d-flex justify-content-between mb-3 text-muted">
+                    <span>პროდუქტების რაოდენობა:</span>
+                    <span>{{ cart_items|length }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3 text-muted">
+                    <span>მიტანა:</span>
+                    <span class="text-success fw-bold">უფასო</span>
+                </div>
+                <hr class="my-4">
+                <div class="d-flex justify-content-between mb-4">
+                    <span class="h4 fw-bold">ჯამი:</span>
+                    <span class="h4 fw-bold text-primary">{{ total_price }} ₾</span>
+                </div>
+                <button class="btn btn-primary btn-lg w-100 py-3 rounded-pill fw-bold shadow">
+                    ყიდვა
+                </button>
+                <div class="text-center mt-3">
+                    <small class="text-muted"><i class="bi bi-shield-check"></i> უსაფრთხო გადახდა</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+        <div class="py-5">
+            <i class="bi bi-cart-x display-1 text-muted mb-4 d-block"></i>
+            <h3 class="fw-bold">თქვენი კალათა ცარიელია</h3>
+            <p class="text-muted mb-4">როგორც ჩანს, ჯერ არაფერი აგირჩევიათ.</p>
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary px-5 py-3 rounded-pill fw-bold">
+                დაიწყეთ შოპინგი
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
